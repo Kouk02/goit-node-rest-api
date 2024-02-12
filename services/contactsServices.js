@@ -1,5 +1,9 @@
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const contactsPath = path.join(__dirname, './db/contacts.json');
 
@@ -13,7 +17,6 @@ async function getContactById(contactId) {
   const result = contacts.find((contact) => contact.id === contactId);
   return result || null;
 }
-
 
 async function removeContact(contactId) {
   const contacts = await listContacts();
@@ -39,4 +42,4 @@ async function addContact(name, email, phone) {
   }
 }
 
-module.exports = { listContacts, getContactById, removeContact, addContact };
+export { listContacts, getContactById, removeContact, addContact };
