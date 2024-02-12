@@ -5,7 +5,7 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const contactsPath = path.join(__dirname, './db/contacts.json');
+const contactsPath = path.join(__dirname, '../contacts.json');
 
 async function listContacts() {
   const data = await fs.readFile(contactsPath);
