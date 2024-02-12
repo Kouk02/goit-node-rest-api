@@ -1,7 +1,6 @@
 import express from "express";
 import {
   getAllContacts,
-  
   deleteContact,
   createContact
 } from "../controllers/contactsControllers.js";
@@ -9,8 +8,6 @@ import {
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
-
-
 
 contactsRouter.delete("/:id", deleteContact);
 
