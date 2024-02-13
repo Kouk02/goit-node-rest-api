@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,13 +15,13 @@ async function listContacts() {
 
 async function getContactById(contactId) {
   const contacts = await listContacts();
-  const result = contacts.find((contact) => contact.id === parseInt(contactId));
+  const result = contacts.find((contact) => contact.id === contactId);
   return result || null;
 }
 
 async function removeContact(contactId) {
   const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === parseInt(contactId));
+  const index = contacts.findIndex((contact) => contact.id === contactId);
   if (index === -1) {
     return null;
   }
@@ -33,7 +34,7 @@ async function addContact(name, email, phone) {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
     const contacts = JSON.parse(data);
-    const newContact = { id: Date.now(), name, email, phone };
+    const newContact = { id: uuidv4(), name, email, phone };
     const updatedContacts = [...contacts, newContact];
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
     return newContact;
@@ -45,7 +46,7 @@ async function addContact(name, email, phone) {
 async function updateContact(contactId, newData) {
   try {
     const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === parseInt(contactId));
+    const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
       return null;
     }

@@ -69,4 +69,3 @@ async function updateContactById(req, res, next) {
 }
 
 export { getAllContacts, getContact, deleteContact, createContact, updateContactById };
-``
