@@ -1,4 +1,4 @@
-import { listContacts, getContactById, removeContact, addContact } from "../services/contactsServices.js";
+import { listContacts, getContactById, removeContact, addContact, updateContact } from "../services/contactsServices.js";
 import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
 
 async function getAllContacts(req, res, next) {
@@ -37,12 +37,12 @@ async function deleteContact(req, res, next) {
 }
 
 async function createContact(req, res, next) {
-  const { name, email, phone } = req.body;
   try {
-    const { error } = createContactSchema.validate({ name, email, phone });
+    const { error } = createContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
+    const { name, email, phone } = req.body;
     const newContact = await addContact(name, email, phone);
     res.status(201).json(newContact);
   } catch (error) {
@@ -54,7 +54,7 @@ async function updateContactById(req, res, next) {
   const { id } = req.params;
   const { name, email, phone } = req.body;
   try {
-    const { error } = updateContactSchema.validate({ name, email, phone });
+    const { error } = updateContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -69,3 +69,4 @@ async function updateContactById(req, res, next) {
 }
 
 export { getAllContacts, getContact, deleteContact, createContact, updateContactById };
+``
