@@ -45,12 +45,13 @@ async function addContact(name, email, phone) {
 
 async function updateContact(contactId, newData) {
   try {
-    const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-    if (index === -1) {
-      return null;
+    const contact = await getContactById(contactId);
+    if (!contact) {
+      return null; 
     }
-    const updatedContact = { ...contacts[index], ...newData };
+    const updatedContact = { ...contact, ...newData };
+    const contacts = await listContacts();
+    const index = contacts.findIndex((c) => c.id === contactId);
     contacts[index] = updatedContact;
     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
     return updatedContact;
@@ -58,5 +59,6 @@ async function updateContact(contactId, newData) {
     throw error;
   }
 }
+
 
 export { listContacts, getContactById, removeContact, addContact, updateContact };

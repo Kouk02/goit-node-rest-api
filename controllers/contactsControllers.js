@@ -1,6 +1,7 @@
 import { listContacts, getContactById, removeContact, addContact, updateContact } from "../services/contactsServices.js";
 import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
 
+
 async function getAllContacts(req, res, next) {
   try {
     const contacts = await listContacts();
@@ -50,39 +51,48 @@ async function createContact(req, res, next) {
   }
 }
 
+
 async function updateContactById(req, res, next) {
-  const { id } = req.params;
+  const { id } = req.params; // Отримуємо id контакта з параметрів
   const { name, email, phone } = req.body;
 
-  // Перевірка чи передано хоча б одне поле
-  if (!name && !email && !phone) {
-    return res.status(400).json({ message: "Body must have at least one field" });
-  }
-
   try {
-    // Валідація полів з використанням схеми
-    const { error } = updateContactSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.message });
+    if (!name && !email && !phone) {
+      return res.status(400).json({ message: "At least one field (name, email, phone) must be provided for update" });
     }
 
-    // Отримання поточного контакту
-    const currentContact = await getContactById(id);
-    if (!currentContact) {
-      return res.status(404).json({ message: "Not found" });
+    const existingContact = await getContactById(id); // Використовуємо id
+    if (!existingContact) {
+      return res.status(404).json({ message: "Contact not found" });
     }
 
-    // Оновлення контакту, збереження поточних значень, якщо відповідне поле не передано
-    const updatedContact = await updateContact(id, {
-      name: name || currentContact.name,
-      email: email || currentContact.email,
-      phone: phone || currentContact.phone
-    });
+    // Перевірка, чи phone складається лише з цифр та додаткових символів
+    const phoneRegex = /^\+?\d+$/;
+    if (phone !== undefined && !phoneRegex.test(phone)) {
+      return res.status(400).json({ message: "Phone must contain only digits and optional '+' symbol" });
+    }
+
+    const updatedFields = {};
+
+    if (name !== undefined) {
+      updatedFields.name = name;
+    }
+    if (email !== undefined) {
+      updatedFields.email = email;
+    }
+    if (phone !== undefined) {
+      updatedFields.phone = phone;
+    }
+
+    const updatedContact = await updateContact(id, updatedFields); // Використовуємо id
 
     res.status(200).json(updatedContact);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
+
+
+
 
 export { getAllContacts, getContact, deleteContact, createContact, updateContactById };

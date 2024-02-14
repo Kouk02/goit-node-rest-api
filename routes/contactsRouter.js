@@ -4,9 +4,9 @@ import { getAllContacts, deleteContact, createContact, getContact, updateContact
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
-contactsRouter.get("/:id", getContact); // Додали роут для отримання контакту по id
+contactsRouter.get("/:id", getContact); 
 contactsRouter.delete("/:id", deleteContact);
 contactsRouter.post("/", createContact);
-contactsRouter.put("/:id", updateContactById); // Додали роут для оновлення контакту по id
+contactsRouter.put("/:id", updateContactById); 
 
 export default contactsRouter;
