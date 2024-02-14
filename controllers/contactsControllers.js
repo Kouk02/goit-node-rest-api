@@ -53,7 +53,7 @@ async function createContact(req, res, next) {
 
 
 async function updateContactById(req, res, next) {
-  const { id } = req.params; // Отримуємо id контакта з параметрів
+  const { id } = req.params; 
   const { name, email, phone } = req.body;
 
   try {
@@ -61,12 +61,12 @@ async function updateContactById(req, res, next) {
       return res.status(400).json({ message: "At least one field (name, email, phone) must be provided for update" });
     }
 
-    const existingContact = await getContactById(id); // Використовуємо id
+    const existingContact = await getContactById(id); 
     if (!existingContact) {
       return res.status(404).json({ message: "Contact not found" });
     }
 
-    // Перевірка, чи phone складається лише з цифр та додаткових символів
+
     const phoneRegex = /^\+?\d+$/;
     if (phone !== undefined && !phoneRegex.test(phone)) {
       return res.status(400).json({ message: "Phone must contain only digits and optional '+' symbol" });
@@ -84,7 +84,7 @@ async function updateContactById(req, res, next) {
       updatedFields.phone = phone;
     }
 
-    const updatedContact = await updateContact(id, updatedFields); // Використовуємо id
+    const updatedContact = await updateContact(id, updatedFields); 
 
     res.status(200).json(updatedContact);
   } catch (error) {
