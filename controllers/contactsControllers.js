@@ -53,15 +53,32 @@ async function createContact(req, res, next) {
 async function updateContactById(req, res, next) {
   const { id } = req.params;
   const { name, email, phone } = req.body;
+
+  // Перевірка чи передано хоча б одне поле
+  if (!name && !email && !phone) {
+    return res.status(400).json({ message: "Body must have at least one field" });
+  }
+
   try {
+    // Валідація полів з використанням схеми
     const { error } = updateContactSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
-    const updatedContact = await updateContact(id, { name, email, phone });
-    if (!updatedContact) {
+
+    // Отримання поточного контакту
+    const currentContact = await getContactById(id);
+    if (!currentContact) {
       return res.status(404).json({ message: "Not found" });
     }
+
+    // Оновлення контакту, збереження поточних значень, якщо відповідне поле не передано
+    const updatedContact = await updateContact(id, {
+      name: name || currentContact.name,
+      email: email || currentContact.email,
+      phone: phone || currentContact.phone
+    });
+
     res.status(200).json(updatedContact);
   } catch (error) {
     res.status(500).json({ message: error.message });
