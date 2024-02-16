@@ -62,3 +62,5 @@ async function updateContact(contactId, newData) {
 
 
 export { listContacts, getContactById, removeContact, addContact, updateContact };
+  
+
