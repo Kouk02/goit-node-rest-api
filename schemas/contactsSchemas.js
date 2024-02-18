@@ -1,15 +1,27 @@
-import Joi from "joi";
+const Joi = require("joi");
 
-export const createContactSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().required()
+const addSchema = Joi.object({
+  name: Joi.string().min(2).max(16).required().messages({
+    "string.empty": "Name cannot be empty",
+    "string.min": "Name must be at least 2 characters",
+    "string.max": "Name cannot exceed 16 characters",
+  }),
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email cannot be empty",
+    "string.email": "Invalid email format",
+  }),
+  phone: Joi.string().min(6).max(16).required().messages({
+    "string.empty": "Phone cannot be empty",
+    "string.min": "Phone number must be at least 6 digits",
+    "string.max": "Phone number cannot exceed 16 digits",
+  }),
 });
 
-export const updateContactSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string()
-}).or('name', 'email', 'phone').messages({
-  'object.missing': 'Body must have at least one field'
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
 });
+
+module.exports = {
+  addSchema,
+  updateFavoriteSchema,
+};
